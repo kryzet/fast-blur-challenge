@@ -4,7 +4,8 @@ Implement the `blur()` function in `blur.c`. Make it as fast as possible.
 
 ## Rules
 
-1. 
+1. Only standard library use is permitted
+2. ...
 
 ## DEADLINE
 
