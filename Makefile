@@ -2,7 +2,7 @@ CC := clang
 
 CFLAGS := -march=native -std=c18 -Wall -Wextra -pthread
 CFLAGS_debug := -O0 -ggdb3 -gdwarf-4
-CFLAGS_release := -O3
+CFLAGS_release := -O3 -DNDEBUG
 
 LDFLAGS := -lm
 
