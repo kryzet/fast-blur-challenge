@@ -13,7 +13,7 @@ debug: filter
 release: CFLAGS += $(CFLAGS_release)
 release: filter
 
-filter: filter.c filter.h
+filter: filter.c filter.h blur.c
 	$(CC) $(CFLAGS) -o $@ filter.c $(LDFLAGS)
 
 .PHONY: release debug
