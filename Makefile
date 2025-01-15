@@ -6,7 +6,7 @@ CFLAGS_release := -O3
 
 LDFLAGS := -lm
 
-all: release
+all: debug
 
 debug: CFLAGS += $(CFLAGS_debug)
 debug: filter
