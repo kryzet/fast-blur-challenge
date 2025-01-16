@@ -12,8 +12,7 @@ Implement the `blur()` function in `blur.c`. Make it as fast as possible.
 
 ## DEADLINE
 
-18 Jan 17:00pm UTC.
-(Temporarily subject to alteration.)
+24 Jan 17:00pm UTC.
 
 ## Target Platforms
 
