@@ -71,9 +71,9 @@ Calling function blur...finished.
 Elapsed time: 0.00000 seconds
 ```
 
-Note: we encourage you to add the below to your existing `README.md` on your GitHub project.
+## We're Using GitHub Under Protest ==
 
-== We're Using GitHub Under Protest ==
+Note: we encourage you to add this section to your existing `README.md` on your GitHub project.
 
 This project is currently hosted on GitHub.  This is not ideal; GitHub is a
 proprietary, trade-secret system that is not Free and Open Souce Software
