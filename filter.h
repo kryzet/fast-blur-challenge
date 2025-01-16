@@ -1,3 +1,6 @@
+#ifndef FILTER_H
+#define FILTER_H
+
 #include <stdint.h>
 
 /* -------------------------------------------------------------------------- */
@@ -70,3 +73,5 @@ RGBTRIPLE;
  * size denotes the box blur radius.
  */
 void blur(uint32_t height, uint32_t width, RGBTRIPLE input[height][width], RGBTRIPLE output[height][width], uint32_t size);
+
+#endif /* FILTER_H */
