@@ -1,11 +1,11 @@
 #define _DEFAULT_SOURCE
+#define _POSIX_C_SOURCE 199309L
 
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/resource.h>
-#include <sys/time.h>
+#include <time.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -15,13 +15,17 @@
 
 #define BLUR_SIZE 3
 
+double timespec_diff(struct timespec *a, struct timespec *b, struct timespec *d);
+
 int main( int argc, char *argv[] )
 {
     BITMAPFILEHEADER bf = { 0x4D42, 0, 0, 0, sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) };
     BITMAPINFOHEADER bi = { sizeof(BITMAPINFOHEADER), 0, 0, 1, 24, 0, 0, 11811, 11811, 0, 0 };
     int width, height, num_channels;
-    struct rusage before, after;
-    struct timeval total_before, total_after, difference;
+    struct timespec before_wall, after_wall, delta_wall;
+#ifdef TIME_CPU
+    struct timespec before_cpu, after_cpu, delta_cpu;
+#endif
 
     // check for correct number of arguments
     if ( argc != 3 )
@@ -55,27 +59,40 @@ int main( int argc, char *argv[] )
     }
 
     // perform the actual function call to blur
-    fprintf( stderr, "Calling function blur..." );
-    getrusage( RUSAGE_SELF, &before );
+    fprintf( stderr, "Running blur..." );
+    clock_gettime( CLOCK_MONOTONIC, &before_wall );
+#ifdef TIME_CPU
+    clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &before_cpu );
+#endif
     blur( height, width, (RGBTRIPLE(*)[width])input, output, BLUR_SIZE );
-    getrusage( RUSAGE_SELF, &after );
+    clock_gettime( CLOCK_MONOTONIC, &after_wall );
+#ifdef TIME_CPU
+    clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &after_cpu );
+#endif
     fprintf( stderr, "finished.\n" );
 
     // free input image
     stbi_image_free( input );
 
     // calculate difference between starting time and ending time
-    timeradd( &before.ru_utime, &before.ru_stime, &total_before );
-    timeradd( & after.ru_utime, & after.ru_stime, &total_after  );
-    timersub( &total_after, &total_before, &difference );
-
-    // print rusage data
+    double delta_wall_d = timespec_diff( &before_wall, &after_wall, &delta_wall );
+    // print timing data
     fprintf
     (
         stderr,
-        "Elapsed time: %.5f seconds\n",
-        ( difference.tv_sec * 1000 * 1000 + difference.tv_usec ) / ( 1000.0 * 1000.0)
+        "Elapsed wall time: %.7f [%ld:%ld] seconds\n",
+        delta_wall_d, delta_wall.tv_sec, delta_wall.tv_nsec
     );
+
+#ifdef TIME_CPU
+    double delta_cpu_d = timespec_diff( &before_cpu, &after_cpu, &delta_cpu );
+    fprintf
+    (
+        stderr,
+        "Elapsed cpu time: %.7f [%ld:%ld] seconds\n",
+        delta_cpu_d, delta_cpu.tv_sec, delta_cpu.tv_nsec
+    );
+#endif
 
     // open output file
     FILE *fp = fopen( argv[2], "wb" );
@@ -112,4 +129,22 @@ int main( int argc, char *argv[] )
 
     // free output bitmap data
     free( output );
+}
+
+double
+timespec_diff(struct timespec *a, struct timespec *b, struct timespec *d)
+{
+    double delta;
+    uint64_t delta_s, delta_ns;
+    delta_s = b->tv_sec - a->tv_sec;
+    if (b->tv_nsec >= a->tv_nsec) {
+        delta_ns = b->tv_nsec - a->tv_nsec;
+    } else {
+        delta_s--;
+        delta_ns = 1000000000 - (a->tv_nsec - b->tv_nsec);
+    }
+    d->tv_sec = delta_s;
+    d->tv_nsec = delta_ns;
+    delta = delta_s + delta_ns / 1000000000.0;
+    return delta;
 }
