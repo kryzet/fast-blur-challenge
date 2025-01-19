@@ -32,8 +32,10 @@ int main( int argc, char *argv[] )
     int width, height, num_channels;
     int64_t n = 1;
     double fast_wall = DBL_MAX, slow_wall = 0.0;
+    double wall_sum = 0, wall_sum_sq = 0;
 #ifdef TIME_CPU
     double fast_cpu = DBL_MAX, slow_cpu = 0.0;
+    double cpu_sum = 0, cpu_sum_sq = 0;
 #endif
 
     // check for correct number of arguments
@@ -122,6 +124,9 @@ int main( int argc, char *argv[] )
         double delta_wall_d = timespec_diff( &bench[i].before_wall, &bench[i].after_wall, &bench[i].delta_wall );
         if (delta_wall_d > slow_wall) slow_wall = delta_wall_d;
         if (delta_wall_d < fast_wall) fast_wall = delta_wall_d;
+        wall_sum += delta_wall_d;
+        wall_sum_sq += delta_wall_d * delta_wall_d;
+
         fprintf
         (
             stderr,
@@ -133,6 +138,9 @@ int main( int argc, char *argv[] )
         double delta_cpu_d = timespec_diff( &bench[i].before_cpu, &bench[i].after_cpu, &bench[i].delta_cpu );
         if (delta_cpu_d > slow_cpu) slow_cpu = delta_cpu_d;
         if (delta_cpu_d < fast_cpu) fast_cpu = delta_cpu_d;
+        cpu_sum += delta_cpu_d;
+        cpu_sum_sq += delta_cpu_d * delta_cpu_d;
+
         fprintf
         (
             stderr,
@@ -146,15 +154,19 @@ int main( int argc, char *argv[] )
     fprintf(
         stderr,
         "Fastest wall: %.7f\n"
-        "Slowest wall: %.7f\n",
-        fast_wall, slow_wall
+        "Slowest wall: %.7f\n"
+        "         Sum: %.7f\n"
+        "  Mean (± σ): %.7f (± %.7f)\n",
+        fast_wall, slow_wall, wall_sum, wall_sum / n, sqrt((wall_sum_sq - wall_sum * wall_sum / n) / (n - 1))
     );
 #ifdef TIME_CPU
     fprintf(
         stderr,
         "Fastest cpu:  %.7f\n"
-        "Slowest cpu:  %.7f\n",
-        fast_cpu, slow_cpu
+        "Slowest cpu:  %.7f\n"
+        "        Sum: %.7f\n"
+        " Mean (± σ): %.7f (± %.7f)\n",
+        fast_cpu, slow_cpu, cpu_sum, cpu_sum / n, sqrt((cpu_sum_sq - cpu_sum * cpu_sum / n) / (n - 1))
     );
 #endif
 
