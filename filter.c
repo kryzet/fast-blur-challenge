@@ -84,6 +84,11 @@ int main( int argc, char *argv[] )
         exit( EXIT_FAILURE );
     }
 
+    // warm-up
+    fprintf( stderr, "Warm up run...");
+    blur( height, width, (RGBTRIPLE(*)[width])input, output, BLUR_SIZE );
+    fprintf( stderr, "finished.\n");
+
     // run benchmark
     for ( uint32_t i = 0; i < n; ++i )
     {
