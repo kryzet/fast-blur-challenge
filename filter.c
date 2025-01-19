@@ -1,6 +1,7 @@
 #define _DEFAULT_SOURCE
 #define _POSIX_C_SOURCE 199309L
 
+#include <float.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,6 +31,10 @@ int main( int argc, char *argv[] )
     BITMAPINFOHEADER bi = { sizeof(BITMAPINFOHEADER), 0, 0, 1, 24, 0, 0, 11811, 11811, 0, 0 };
     int width, height, num_channels;
     int64_t n = 1;
+    double fast_wall = DBL_MAX, slow_wall = 0.0;
+#ifdef TIME_CPU
+    double fast_cpu = DBL_MAX, slow_cpu = 0.0;
+#endif
 
     // check for correct number of arguments
     if ( argc != 3 && argc != 4 )
@@ -110,28 +115,48 @@ int main( int argc, char *argv[] )
     // note: the trailing spaces overwrite the tail end of n when at it's max length
     fprintf( stderr, "Running blur...finished.  \n" );
 
-    // print timing data
+    // print timing data while gathering statistics
     for ( uint32_t i = 0; i < n; ++i )
     {
         // calculate difference between starting time and ending time
         double delta_wall_d = timespec_diff( &bench[i].before_wall, &bench[i].after_wall, &bench[i].delta_wall );
+        if (delta_wall_d > slow_wall) slow_wall = delta_wall_d;
+        if (delta_wall_d < fast_wall) fast_wall = delta_wall_d;
         fprintf
         (
             stderr,
-            "Elapsed wall time: %.7f [%ld:%ld] seconds\n",
+            "Elapsed wall time: %.7f seconds [%lds %ldns]\n",
             delta_wall_d, bench[i].delta_wall.tv_sec, bench[i].delta_wall.tv_nsec
         );
 
 #ifdef TIME_CPU
         double delta_cpu_d = timespec_diff( &bench[i].before_cpu, &bench[i].after_cpu, &bench[i].delta_cpu );
+        if (delta_cpu_d > slow_cpu) slow_cpu = delta_cpu_d;
+        if (delta_cpu_d < fast_cpu) fast_cpu = delta_cpu_d;
         fprintf
         (
             stderr,
-            "Elapsed cpu time: %.7f [%ld:%ld] seconds\n",
+            "Elapsed cpu time:  %.7f seconds [%lds %ldns]\n",
             delta_cpu_d, bench[i].delta_cpu.tv_sec, bench[i].delta_cpu.tv_nsec
         );
 #endif
     }
+
+    // print statistics
+    fprintf(
+        stderr,
+        "Fastest wall: %.7f\n"
+        "Slowest wall: %.7f\n",
+        fast_wall, slow_wall
+    );
+#ifdef TIME_CPU
+    fprintf(
+        stderr,
+        "Fastest cpu:  %.7f\n"
+        "Slowest cpu:  %.7f\n",
+        fast_cpu, slow_cpu
+    );
+#endif
 
     // free input image
     stbi_image_free( input );
