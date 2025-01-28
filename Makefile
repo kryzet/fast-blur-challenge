@@ -22,13 +22,21 @@ filter: filter.c filter.h blur.c
 
 # The following is not pretty but should get the job done
 
+# Presumes you have an images/ directory in the project root containing an
+# image '3x3.bmp'. For now you'll have to change the path manually to bench
+# using another image.
+# Set N to be the number of runs per benchmark.
+# Each benchmark will output to it's own file based on the source file name.
+N := 10
 bench_files := $(wildcard submissions/*)
 bench-all: | bench submissions
 	@$(foreach f, $(bench_files), \
         tput setaf 3 && echo "Benching $f..." && tput sgr0 \
         && cp $f bench/blur.c && cd bench \
         && MAKEFLAGS=--no-print-directory $(MAKE) release \
-        && if [[ -f filter ]]; then tput setaf 6 ; ./filter ../3x3.bmp out.bmp ; tput sgr0 ; fi \
+        && if [[ -f filter ]]; then tput setaf 6 ; \
+            ./filter ../images/3x3.bmp out_$(basename $(notdir $f)).bmp $(N) ; tput sgr0 ; \
+        fi \
         ; cd .. \
         ; \
     )
@@ -41,4 +49,7 @@ submissions:
 	mkdir -p $@
 	@echo "Place one or more versions of 'blur.c' into submissions/"
 
-.PHONY: bench-all
+clean-bench:
+	rm -rf bench/
+
+.PHONY: bench-all clean-bench
