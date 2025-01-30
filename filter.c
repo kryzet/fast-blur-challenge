@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <valgrind/callgrind.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -90,6 +91,7 @@ int main( int argc, char *argv[] )
         exit( EXIT_FAILURE );
     }
 
+CALLGRIND_START_INSTRUMENTATION;
     // warm-up
     fprintf( stderr, "Warm up run...");
     blur( height, width, (RGBTRIPLE(*)[width])input, output, BLUR_SIZE );
@@ -113,6 +115,7 @@ int main( int argc, char *argv[] )
         clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &bench[i].after_cpu );
 #endif
     }
+CALLGRIND_STOP_INSTRUMENTATION;
     // note: the trailing spaces overwrite the tail end of n when at it's max length
     fprintf( stderr, "Running blur...finished.  \n" );
 
