@@ -2,3 +2,4 @@ filter
 bench/**
 images/**
 submissions/**
+.cache/**
