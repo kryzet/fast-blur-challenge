@@ -3,3 +3,4 @@ bench/**
 images/**
 submissions/**
 .cache/**
+callgrind.out.*
