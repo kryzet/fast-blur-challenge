@@ -55,7 +55,7 @@ int main( int argc, char *argv[] )
         n = strtol(argv[3], 0, 10);
         if ( n == LONG_MIN || n == LONG_MAX || n < 1 || n > 10000 )
         {
-            fprintf( stderr, "Invalid n; expected [1 - 10000]\n" );
+            fputs("Invalid n; expected [1 - 10000]\n", stderr);
             exit( EXIT_FAILURE );
         }
     }
@@ -64,7 +64,7 @@ int main( int argc, char *argv[] )
     unsigned char *input = stbi_load( argv[1], &width, &height, &num_channels, 3 );
     if ( input == NULL )
     {
-        fprintf( stderr, "Error opening/decoding input file!\n" );
+        fputs("Error opening/decoding input file!\n", stderr);
         exit( EXIT_FAILURE );
     }
 
@@ -80,22 +80,22 @@ int main( int argc, char *argv[] )
     RGBTRIPLE(*output)[width] = calloc( height * width, sizeof(RGBTRIPLE) );
     if ( output == NULL )
     {
-        fprintf( stderr, "Error allocating memory for output image data!\n" );
+        fputs("Error allocating memory for output image data!\n", stderr);
         exit( EXIT_FAILURE );
     }
 
     struct benchmark *bench = malloc( n * sizeof(struct benchmark) );
     if ( bench == NULL )
     {
-        fprintf( stderr, "Error allocating memory for benchmark data!\n" );
+        fputs("Error allocating memory for benchmark data!\n", stderr);
         exit( EXIT_FAILURE );
     }
 
 CALLGRIND_START_INSTRUMENTATION;
     // warm-up
-    fprintf( stderr, "Warm up run...");
+    fputs("Warm up run...", stderr);
     blur( height, width, (RGBTRIPLE(*)[width])input, output, BLUR_SIZE );
-    fprintf( stderr, "finished.\n");
+    fputs("finished.\n", stderr);
 
     // run benchmark
     for ( uint32_t i = 0; i < n; ++i )
@@ -117,7 +117,7 @@ CALLGRIND_START_INSTRUMENTATION;
     }
 CALLGRIND_STOP_INSTRUMENTATION;
     // note: the trailing spaces overwrite the tail end of n when at it's max length
-    fprintf( stderr, "Running blur...finished.  \n" );
+    fputs("Running blur...finished.  \n", stderr);
 
     // print timing data while gathering statistics
     for ( uint32_t i = 0; i < n; ++i )
@@ -179,7 +179,7 @@ CALLGRIND_STOP_INSTRUMENTATION;
     FILE *fp = fopen( argv[2], "wb" );
     if ( fp == NULL )
     {
-        fprintf( stderr, "Error opening output file!\n" );
+        fputs("Error opening output file!\n", stderr);
         exit( EXIT_FAILURE );
     }
 
