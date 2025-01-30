@@ -11,7 +11,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-#include "filter.h"
 #include "blur.c"
 
 #define BLUR_SIZE 3
