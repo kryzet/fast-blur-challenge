@@ -4,3 +4,4 @@ images/**
 submissions/**
 .cache/**
 callgrind.out.*
+*.bmp
