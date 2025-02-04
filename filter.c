@@ -148,6 +148,8 @@ int main(int argc, char *argv[])
 #endif
     }
 
+    free(bench);
+
     // print statistics
     fprintf(stderr,
             "Fastest wall: %.7f\n"
