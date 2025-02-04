@@ -30,8 +30,8 @@ int main(int argc, char *argv[])
 {
     BITMAPFILEHEADER bf = {0x4D42, 0, 0, 0,
                            sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER)};
-    BITMAPINFOHEADER bi = {
-        sizeof(BITMAPINFOHEADER), 0, 0, 1, 24, 0, 0, 11811, 11811, 0, 0};
+    BITMAPINFOHEADER bi
+        = {sizeof(BITMAPINFOHEADER), 0, 0, 1, 24, 0, 0, 11811, 11811, 0, 0};
     int width, height, num_channels;
     int64_t n = 1;
     double fast_wall = DBL_MAX, slow_wall = 0.0;
@@ -61,8 +61,8 @@ int main(int argc, char *argv[])
     }
 
     // open and decode input file
-    unsigned char *input =
-        stbi_load(argv[1], &width, &height, &num_channels, 3);
+    unsigned char *input
+        = stbi_load(argv[1], &width, &height, &num_channels, 3);
     if (input == NULL) {
         fputs("Error opening/decoding input file!\n", stderr);
         exit(EXIT_FAILURE);
