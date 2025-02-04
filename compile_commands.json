@@ -7,6 +7,7 @@
             "-std=c18",
             "-Wall",
             "-Wextra",
+            "-Wpedantic",
             "-pthread",
             "-O0",
             "-ggdb3",
@@ -279,6 +280,7 @@
             "-O0",
             "-Wall",
             "-Wextra",
+            "-Wpedantic",
             "-std=c18",
             "-ferror-limit",
             "19",
@@ -291,11 +293,11 @@
             "-x",
             "c",
             "-o",
-            "/tmp/filter-25b3b9.o",
+            "/tmp/filter-2ff56c.o",
             "filter.c"
         ],
         "directory": ".",
         "file": "./filter.c",
-        "output": "/tmp/filter-25b3b9.o"
+        "output": "/tmp/filter-2ff56c.o"
     }
 ]

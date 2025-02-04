@@ -1,6 +1,6 @@
 CC := clang
 
-CFLAGS := -march=native -std=c18 -Wall -Wextra -pthread
+CFLAGS := -march=native -std=c18 -Wall -Wextra -Wpedantic -pthread
 CFLAGS_debug := -O0 -ggdb3 -gdwarf-4
 CFLAGS_release := -O3 -DNDEBUG
 
