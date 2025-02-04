@@ -18,6 +18,12 @@ filter: filter.c filter.h blur.c
 
 .PHONY: release debug
 
+debugger: | debug debugger.c
+	./filter images/courtyard.bmp cy.bmp 1 \
+	&& $(CC) -Wall -Wextra -Wpedantic -O3 -o $@ debugger.c -lm \
+	&& ./debugger images/courtyard.bmp cy_check.bmp \
+	&& cmp -b cy.bmp cy_check.bmp
+
 ###############################################################################
 
 # The following is not pretty but should get the job done
