@@ -1,6 +1,8 @@
 filter
 bench/**
 images/**
+!images/3x3.bmp
+!images/7x7.bmp
 submissions/**
 .cache/**
 callgrind.out.*

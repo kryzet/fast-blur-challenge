@@ -41,7 +41,7 @@ bench-all: | bench submissions
         && cp $f bench/blur.c && cd bench \
         && MAKEFLAGS=--no-print-directory $(MAKE) release \
         && if [[ -f filter ]]; then tput setaf 6 ; \
-            ./filter ../images/3x3.bmp out_$(basename $(notdir $f)).bmp $(N) ; tput sgr0 ; \
+            ./filter ../images/7x7.bmp out_$(basename $(notdir $f)).bmp $(N) ; tput sgr0 ; \
         fi \
         ; cd .. \
         ; \
